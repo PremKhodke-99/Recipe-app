@@ -5,7 +5,7 @@ import { GlobalContext } from "../../context";
 export default function Details() {
 
     const { id } = useParams();
-    const { recipeDetialsData, setRecipeDetailsData } = useContext(GlobalContext);
+    const { recipeDetialsData, setRecipeDetailsData, favouriteList, handleAddFavourite } = useContext(GlobalContext);
 
 
     useEffect(() => {
@@ -34,19 +34,35 @@ export default function Details() {
                     />
                 </div>
             </div>
-            <div className="flex flex-col gap-3">
-                <span className="text-sm text-cyan-700 font-medium">{recipeDetialsData?.recipe?.publisher}</span>
-                <h3 className='font-bold text-2xl truncate text-black'>{recipeDetialsData?.recipe?.title}</h3>
+            <div
+                className="flex flex-col gap-3">
+                <span
+                    className="text-sm text-cyan-700 font-medium"
+                >{recipeDetialsData?.recipe?.publisher}</span>
+                <h3
+                    className='font-bold text-2xl truncate text-black'
+                >{recipeDetialsData?.recipe?.title}</h3>
                 <div>
-                    <button className="p-3 px-8 rounded-lg text-sm uppercase font-medium tracking-wider mt-3 inlin' shadow-md bg-black text-white">Save as favourites</button>
+                    <button onClick={() => handleAddFavourite(recipeDetialsData?.recipe)} className="p-3 px-8 rounded-lg text-sm uppercase font-medium tracking-wider mt-3 inlin' shadow-md bg-black text-white">
+                        {
+                            favouriteList && favouriteList.length > 0 &&
+                                favouriteList.findIndex(item => item.id === recipeDetialsData?.recipe?.id) !== -1 ? "Remove from Favourites" : "Add to Favourites"
+                        }
+                    </button>
                 </div>
                 <div>
-                    <span className="text-3xl font-semibold text-black">Ingredients:</span>
-                    <ul className="flex flex-col gap-2">
+                    <span
+                        className="text-3xl font-semibold text-black">Ingredients:</span>
+                    <ul
+                        className="flex flex-col gap-2">
                         {
                             recipeDetialsData?.recipe?.ingredients.map(ingredient => <li>
-                                <span className="text-2xl font-semibold text-black">{ingredient.quantity} {ingredient.unit}</span>
-                                <span className="text-2xl font-semibold text-black">{ingredient.description}</span>
+                                <span
+                                    className="text-2xl font-semibold text-black"
+                                >{ingredient.quantity} {ingredient.unit}</span>
+                                <span
+                                    className="text-2xl font-semibold text-black"
+                                >{ingredient.description}</span>
                             </li>)
                         }
                     </ul>

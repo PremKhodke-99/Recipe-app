@@ -1,4 +1,5 @@
 import { createContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export const GlobalContext = createContext(null);
 
@@ -8,6 +9,9 @@ export default function GlobalState({ children }) {
     const [loading, setLoading] = useState(false);
     const [recipeList, setRecipeList] = useState([]);
     const [recipeDetialsData, setRecipeDetailsData] = useState(null);
+    const [favouriteList, setFavouriteList] = useState([]);
+
+    const navigate = useNavigate();
 
     async function handleSubmit(event) {
         event.preventDefault();
@@ -18,6 +22,7 @@ export default function GlobalState({ children }) {
 
             if (data?.data?.recipes) {
                 setRecipeList(data?.data?.recipes)
+                navigate('/')
             }
         } catch (err) {
             console.log(err);
@@ -27,6 +32,20 @@ export default function GlobalState({ children }) {
         }
     }
 
+    function handleAddFavourite(getCurrentItem){
+        console.log(getCurrentItem)
+        let copyFavourite = [...favouriteList];
+        const index = copyFavourite.findIndex(item => item.id === getCurrentItem.id);
+
+        if(index === -1){
+            copyFavourite.push(getCurrentItem)
+        }else{
+            copyFavourite.splice(index, 1);
+        }
+
+        setFavouriteList(copyFavourite);
+    }
+
     return <GlobalContext.Provider value={{
         searchParam,
         setSearchParam,
@@ -34,7 +53,9 @@ export default function GlobalState({ children }) {
         recipeList,
         handleSubmit,
         recipeDetialsData,
-        setRecipeDetailsData
+        setRecipeDetailsData,
+        handleAddFavourite,
+        favouriteList
     }}>
         {children}
     </GlobalContext.Provider>
